@@ -40,16 +40,22 @@ app.post("/ask", async (req, res) => {
     const questionEmbedding = await createEmbedding(question);
     const matches = await querySimilarEmbeddings({
       queryEmbedding: questionEmbedding,
-      limit: 1,
+      limit: 3,
     });
     const topMatch = matches[0] || null;
 
     const prompt = topMatch?.document
       ? [
-          "Answer the user question using the retrieved context.",
-          "If the context is not enough, say what is missing.",
+          "You are a compassionate philosophy guide.",
+          "Help the user with their issue using only the single retrieved quote below.",
+          "Keep the tone encouraging, clear, and practical.",
+          "Start your response by writing the quote verbatim in quotation marks.",
+          "Do not reference any other philosophers, quotes, or sources.",
+          "After the quote, explain how it applies to the user's question.",
+          "End with one short actionable step the user can try today.",
           "",
-          `Context:\n${topMatch.document}`,
+          `Retrieved quote: "${topMatch.document}"`,
+          `Author: ${topMatch.metadata?.author || "Unknown"}`,
           "",
           `Question:\n${question}`,
         ].join("\n")
@@ -101,6 +107,75 @@ app.post("/createEmbedding", async (req, res) => {
   } catch (error) {
     console.error("Embedding pipeline failed:", error.message);
     res.status(500).json({ error: "Failed to create/store embedding" });
+  }
+});
+
+app.post("/createEmbeddingsBulk", async (req, res) => {
+  try {
+    const items = Array.isArray(req.body) ? req.body : req.body?.items;
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: "items must be a non-empty array" });
+    }
+
+    const results = [];
+
+    for (let index = 0; index < items.length; index += 1) {
+      const item = items[index] || {};
+      const { data, id, metadata } = item;
+
+      if (!data) {
+        results.push({
+          index,
+          ok: false,
+          error: "data is required",
+        });
+        continue;
+      }
+
+      try {
+        const embedding = await createEmbedding(data);
+        const recordId = id || randomUUID();
+
+        const stored = await upsertEmbedding({
+          id: recordId,
+          document: data,
+          embedding,
+          metadata: {
+            source: "createEmbeddingsBulk_endpoint",
+            createdAt: new Date().toISOString(),
+            ...(metadata || {}),
+          },
+        });
+
+        results.push({
+          index,
+          ok: true,
+          id: stored.id,
+          collection: stored.collection,
+          dimensions: embedding.length,
+        });
+      } catch (error) {
+        results.push({
+          index,
+          ok: false,
+          error: error.message,
+        });
+      }
+    }
+
+    const successCount = results.filter((r) => r.ok).length;
+    const failureCount = results.length - successCount;
+
+    res.json({
+      ok: failureCount === 0,
+      total: results.length,
+      successCount,
+      failureCount,
+      results,
+    });
+  } catch (error) {
+    console.error("Bulk embedding pipeline failed:", error.message);
+    res.status(500).json({ error: "Failed to bulk create/store embeddings" });
   }
 });
 
