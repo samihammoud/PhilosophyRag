@@ -3,7 +3,11 @@ import express from "express";
 import cors from "cors";
 import { randomUUID } from "node:crypto";
 import { askChat, createEmbedding } from "../services/llm.js";
-import { getEmbeddings, upsertEmbedding } from "../db/chromaDB.js";
+import {
+  getEmbeddings,
+  querySimilarEmbeddings,
+  upsertEmbedding,
+} from "../db/chromaDB.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,8 +37,30 @@ app.post("/ask", async (req, res) => {
       return res.status(400).json({ error: "question is required" });
     }
 
-    const answer = await askChat(question);
-    res.json({ answer });
+    const questionEmbedding = await createEmbedding(question);
+    const matches = await querySimilarEmbeddings({
+      queryEmbedding: questionEmbedding,
+      limit: 1,
+    });
+    const topMatch = matches[0] || null;
+
+    const prompt = topMatch?.document
+      ? [
+          "Answer the user question using the retrieved context.",
+          "If the context is not enough, say what is missing.",
+          "",
+          `Context:\n${topMatch.document}`,
+          "",
+          `Question:\n${question}`,
+        ].join("\n")
+      : question;
+
+    const answer = await askChat(prompt);
+    res.json({
+      ok: true,
+      answer,
+      match: topMatch,
+    });
   } catch (error) {
     console.error("LLM request failed:", error.message);
     res.status(500).json({ error: "Failed to get LLM response" });
@@ -43,11 +69,13 @@ app.post("/ask", async (req, res) => {
 
 app.post("/createEmbedding", async (req, res) => {
   try {
+    // Destructure request body fields used to build upsertEmbedding params
     const { data, id, metadata } = req.body;
     if (!data) {
       return res.status(400).json({ error: "data is required" });
     }
 
+    //SDK hits api and returns embeddings, leveraging that function
     const embedding = await createEmbedding(data);
     const recordId = id || randomUUID();
 
@@ -80,7 +108,7 @@ app.get("/getCollections", async (req, res) => {
   try {
     const ids = parseIdsQuery(req.query.ids);
     const records = await getEmbeddings({ ids });
-    res.json({ ok: true, records });
+    res.json({ ok: true, documents: records.documents });
   } catch (error) {
     console.error("Chroma read failed:", error.message);
     res.status(500).json({ error: "Failed to read from Chroma" });

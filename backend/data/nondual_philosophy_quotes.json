@@ -1,0 +1,842 @@
+[
+  {
+    "id": "q001",
+    "data": "Tat tvam asi.",
+    "metadata": {
+      "author": "Chandogya Upanishad",
+      "work": "Chandogya Upanishad",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "nonduality",
+        "self",
+        "upanishads"
+      ]
+    }
+  },
+  {
+    "id": "q002",
+    "data": "Aham brahmasmi.",
+    "metadata": {
+      "author": "Brihadaranyaka Upanishad",
+      "work": "Brihadaranyaka Upanishad",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "nonduality",
+        "self",
+        "brahman"
+      ]
+    }
+  },
+  {
+    "id": "q003",
+    "data": "All this is indeed Brahman.",
+    "metadata": {
+      "author": "Chandogya Upanishad",
+      "work": "Chandogya Upanishad",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "oneness",
+        "brahman",
+        "cosmos"
+      ]
+    }
+  },
+  {
+    "id": "q004",
+    "data": "The Self is to be seen, heard, reflected upon, and meditated upon.",
+    "metadata": {
+      "author": "Brihadaranyaka Upanishad",
+      "work": "Brihadaranyaka Upanishad",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "self",
+        "practice",
+        "inquiry"
+      ]
+    }
+  },
+  {
+    "id": "q005",
+    "data": "He who sees all beings in the Self, and the Self in all beings, hates none.",
+    "metadata": {
+      "author": "Isha Upanishad",
+      "work": "Isha Upanishad",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "unity",
+        "ethics",
+        "self"
+      ]
+    }
+  },
+  {
+    "id": "q006",
+    "data": "When to me all beings have become one with my own Self, what delusion, what sorrow can remain?",
+    "metadata": {
+      "author": "Isha Upanishad",
+      "work": "Isha Upanishad",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "unity",
+        "suffering",
+        "awakening"
+      ]
+    }
+  },
+  {
+    "id": "q007",
+    "data": "As is your desire, so is your will. As is your will, so is your deed.",
+    "metadata": {
+      "author": "Brihadaranyaka Upanishad",
+      "work": "Brihadaranyaka Upanishad",
+      "tradition": "Vedanta",
+      "tags": [
+        "mind",
+        "karma",
+        "practice"
+      ]
+    }
+  },
+  {
+    "id": "q008",
+    "data": "Brahman is real; the world is appearance; the individual self is not different from Brahman.",
+    "metadata": {
+      "author": "Adi Shankara (attributed)",
+      "work": "Advaita teaching summary",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "nonduality",
+        "maya",
+        "brahman"
+      ]
+    }
+  },
+  {
+    "id": "q009",
+    "data": "The mind alone is the cause of bondage and liberation.",
+    "metadata": {
+      "author": "Amritabindu Upanishad",
+      "work": "Amritabindu Upanishad",
+      "tradition": "Vedanta",
+      "tags": [
+        "mind",
+        "liberation",
+        "bondage"
+      ]
+    }
+  },
+  {
+    "id": "q010",
+    "data": "The world is only as real as the mind that perceives it.",
+    "metadata": {
+      "author": "Advaita saying",
+      "work": "Traditional teaching",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "mind",
+        "appearance",
+        "perception"
+      ]
+    }
+  },
+  {
+    "id": "q011",
+    "data": "Silence is the most powerful teaching.",
+    "metadata": {
+      "author": "Ramana Maharshi",
+      "work": "Talks",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "silence",
+        "teaching",
+        "presence"
+      ]
+    }
+  },
+  {
+    "id": "q012",
+    "data": "Your own Self-realization is the greatest service you can render the world.",
+    "metadata": {
+      "author": "Ramana Maharshi",
+      "work": "Talks",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "self",
+        "service",
+        "realization"
+      ]
+    }
+  },
+  {
+    "id": "q013",
+    "data": "Investigate to whom the thoughts arise.",
+    "metadata": {
+      "author": "Ramana Maharshi",
+      "work": "Who am I? teaching",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "self-inquiry",
+        "thought",
+        "practice"
+      ]
+    }
+  },
+  {
+    "id": "q014",
+    "data": "The self is never born and never dies.",
+    "metadata": {
+      "author": "Bhagavad Gita",
+      "work": "Bhagavad Gita",
+      "tradition": "Vedanta",
+      "tags": [
+        "self",
+        "death",
+        "eternal"
+      ]
+    }
+  },
+  {
+    "id": "q015",
+    "data": "Established in yoga, perform action.",
+    "metadata": {
+      "author": "Bhagavad Gita",
+      "work": "Bhagavad Gita",
+      "tradition": "Vedanta",
+      "tags": [
+        "action",
+        "equanimity",
+        "practice"
+      ]
+    }
+  },
+  {
+    "id": "q016",
+    "data": "You have a right to action, but never to its fruits.",
+    "metadata": {
+      "author": "Bhagavad Gita",
+      "work": "Bhagavad Gita",
+      "tradition": "Vedanta",
+      "tags": [
+        "karma yoga",
+        "detachment",
+        "action"
+      ]
+    }
+  },
+  {
+    "id": "q017",
+    "data": "The Tao that can be spoken is not the eternal Tao.",
+    "metadata": {
+      "author": "Laozi",
+      "work": "Tao Te Ching",
+      "tradition": "Daoism",
+      "tags": [
+        "tao",
+        "language",
+        "mystery"
+      ]
+    }
+  },
+  {
+    "id": "q018",
+    "data": "Knowing others is intelligence; knowing yourself is true wisdom.",
+    "metadata": {
+      "author": "Laozi",
+      "work": "Tao Te Ching",
+      "tradition": "Daoism",
+      "tags": [
+        "self-knowledge",
+        "wisdom",
+        "insight"
+      ]
+    }
+  },
+  {
+    "id": "q019",
+    "data": "To the mind that is still, the whole universe surrenders.",
+    "metadata": {
+      "author": "Laozi (attributed)",
+      "work": "Daoist saying",
+      "tradition": "Daoism",
+      "tags": [
+        "stillness",
+        "mind",
+        "universe"
+      ]
+    }
+  },
+  {
+    "id": "q020",
+    "data": "Nature does not hurry, yet everything is accomplished.",
+    "metadata": {
+      "author": "Laozi (attributed)",
+      "work": "Daoist saying",
+      "tradition": "Daoism",
+      "tags": [
+        "nature",
+        "wu wei",
+        "timing"
+      ]
+    }
+  },
+  {
+    "id": "q021",
+    "data": "When I let go of what I am, I become what I might be.",
+    "metadata": {
+      "author": "Laozi (attributed)",
+      "work": "Daoist saying",
+      "tradition": "Daoism",
+      "tags": [
+        "letting go",
+        "identity",
+        "becoming"
+      ]
+    }
+  },
+  {
+    "id": "q022",
+    "data": "In the beginner's mind there are many possibilities, in the expert's mind there are few.",
+    "metadata": {
+      "author": "Shunryu Suzuki",
+      "work": "Zen Mind, Beginner's Mind",
+      "tradition": "Zen",
+      "tags": [
+        "beginner-mind",
+        "zen",
+        "practice"
+      ]
+    }
+  },
+  {
+    "id": "q023",
+    "data": "Form is emptiness; emptiness is form.",
+    "metadata": {
+      "author": "Heart Sutra",
+      "work": "Prajnaparamita Hridaya",
+      "tradition": "Mahayana Buddhism",
+      "tags": [
+        "emptiness",
+        "form",
+        "nonduality"
+      ]
+    }
+  },
+  {
+    "id": "q024",
+    "data": "Gate gate paragate parasamgate bodhi svaha.",
+    "metadata": {
+      "author": "Heart Sutra",
+      "work": "Prajnaparamita Hridaya",
+      "tradition": "Mahayana Buddhism",
+      "tags": [
+        "prajna",
+        "awakening",
+        "mantra"
+      ]
+    }
+  },
+  {
+    "id": "q025",
+    "data": "Peace comes from within. Do not seek it without.",
+    "metadata": {
+      "author": "Buddha (attributed)",
+      "work": "Buddhist saying",
+      "tradition": "Buddhism",
+      "tags": [
+        "peace",
+        "mind",
+        "practice"
+      ]
+    }
+  },
+  {
+    "id": "q026",
+    "data": "No self, no problem.",
+    "metadata": {
+      "author": "Zen saying",
+      "work": "Zen proverb",
+      "tradition": "Zen",
+      "tags": [
+        "anatta",
+        "humor",
+        "non-self"
+      ]
+    }
+  },
+  {
+    "id": "q027",
+    "data": "Before enlightenment, chop wood, carry water. After enlightenment, chop wood, carry water.",
+    "metadata": {
+      "author": "Zen proverb",
+      "work": "Zen saying",
+      "tradition": "Zen",
+      "tags": [
+        "practice",
+        "ordinary",
+        "awakening"
+      ]
+    }
+  },
+  {
+    "id": "q028",
+    "data": "The obstacle is the path.",
+    "metadata": {
+      "author": "Zen proverb",
+      "work": "Zen saying",
+      "tradition": "Zen",
+      "tags": [
+        "path",
+        "difficulty",
+        "practice"
+      ]
+    }
+  },
+  {
+    "id": "q029",
+    "data": "The quieter you become, the more you can hear.",
+    "metadata": {
+      "author": "Ram Dass (attributed)",
+      "work": "Modern spiritual saying",
+      "tradition": "Contemplative",
+      "tags": [
+        "silence",
+        "listening",
+        "awareness"
+      ]
+    }
+  },
+  {
+    "id": "q030",
+    "data": "Be as you are.",
+    "metadata": {
+      "author": "Ramana Maharshi",
+      "work": "Teaching phrase",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "being",
+        "self",
+        "simplicity"
+      ]
+    }
+  },
+  {
+    "id": "q031",
+    "data": "Wisdom tells me I am nothing. Love tells me I am everything.",
+    "metadata": {
+      "author": "Nisargadatta Maharaj",
+      "work": "I Am That",
+      "tradition": "Advaita",
+      "tags": [
+        "wisdom",
+        "love",
+        "nonduality"
+      ]
+    }
+  },
+  {
+    "id": "q032",
+    "data": "You are not in the world; the world is in you.",
+    "metadata": {
+      "author": "Nisargadatta Maharaj",
+      "work": "I Am That",
+      "tradition": "Advaita",
+      "tags": [
+        "awareness",
+        "world",
+        "self"
+      ]
+    }
+  },
+  {
+    "id": "q033",
+    "data": "The only thing you know for sure is: I am.",
+    "metadata": {
+      "author": "Nisargadatta Maharaj",
+      "work": "I Am That",
+      "tradition": "Advaita",
+      "tags": [
+        "i-am",
+        "self-inquiry",
+        "certainty"
+      ]
+    }
+  },
+  {
+    "id": "q034",
+    "data": "What you are, the world is.",
+    "metadata": {
+      "author": "Nisargadatta Maharaj",
+      "work": "I Am That",
+      "tradition": "Advaita",
+      "tags": [
+        "projection",
+        "mind",
+        "world"
+      ]
+    }
+  },
+  {
+    "id": "q035",
+    "data": "Realization is not acquisition of anything new, nor is it a new faculty.",
+    "metadata": {
+      "author": "Ramana Maharshi",
+      "work": "Talks",
+      "tradition": "Advaita Vedanta",
+      "tags": [
+        "realization",
+        "self",
+        "non-attainment"
+      ]
+    }
+  },
+  {
+    "id": "q036",
+    "data": "The wound is the place where the Light enters you.",
+    "metadata": {
+      "author": "Rumi",
+      "work": "Poetry",
+      "tradition": "Sufi",
+      "tags": [
+        "suffering",
+        "light",
+        "transformation"
+      ]
+    }
+  },
+  {
+    "id": "q037",
+    "data": "Out beyond ideas of wrongdoing and rightdoing, there is a field. I'll meet you there.",
+    "metadata": {
+      "author": "Rumi",
+      "work": "Poetry",
+      "tradition": "Sufi",
+      "tags": [
+        "duality",
+        "love",
+        "unity"
+      ]
+    }
+  },
+  {
+    "id": "q038",
+    "data": "You are not a drop in the ocean. You are the entire ocean in a drop.",
+    "metadata": {
+      "author": "Rumi (attributed)",
+      "work": "Sufi saying",
+      "tradition": "Sufi",
+      "tags": [
+        "unity",
+        "self",
+        "whole"
+      ]
+    }
+  },
+  {
+    "id": "q039",
+    "data": "I looked in temples, churches, and mosques. But I found the Divine within my heart.",
+    "metadata": {
+      "author": "Rumi (attributed)",
+      "work": "Sufi saying",
+      "tradition": "Sufi",
+      "tags": [
+        "inner-divine",
+        "heart",
+        "search"
+      ]
+    }
+  },
+  {
+    "id": "q040",
+    "data": "When the soul lies down in that grass, the world is too full to talk about.",
+    "metadata": {
+      "author": "Rumi",
+      "work": "Poetry",
+      "tradition": "Sufi",
+      "tags": [
+        "silence",
+        "presence",
+        "mysticism"
+      ]
+    }
+  },
+  {
+    "id": "q041",
+    "data": "The eye through which I see God is the same eye through which God sees me.",
+    "metadata": {
+      "author": "Meister Eckhart",
+      "work": "Sermons",
+      "tradition": "Christian mysticism",
+      "tags": [
+        "nonduality",
+        "mysticism",
+        "god"
+      ]
+    }
+  },
+  {
+    "id": "q042",
+    "data": "The kingdom of God is within you.",
+    "metadata": {
+      "author": "Jesus",
+      "work": "Luke 17:21",
+      "tradition": "Christian",
+      "tags": [
+        "inner",
+        "kingdom",
+        "spirituality"
+      ]
+    }
+  },
+  {
+    "id": "q043",
+    "data": "Be still, and know that I am God.",
+    "metadata": {
+      "author": "Psalms",
+      "work": "Psalm 46:10",
+      "tradition": "Biblical",
+      "tags": [
+        "stillness",
+        "knowing",
+        "god"
+      ]
+    }
+  },
+  {
+    "id": "q044",
+    "data": "He who knows himself knows his Lord.",
+    "metadata": {
+      "author": "Sufi saying",
+      "work": "Traditional saying",
+      "tradition": "Sufi",
+      "tags": [
+        "self-knowledge",
+        "divine",
+        "gnosis"
+      ]
+    }
+  },
+  {
+    "id": "q045",
+    "data": "The way up and the way down are one and the same.",
+    "metadata": {
+      "author": "Heraclitus",
+      "work": "Fragments",
+      "tradition": "Pre-Socratic",
+      "tags": [
+        "unity",
+        "opposites",
+        "process"
+      ]
+    }
+  },
+  {
+    "id": "q046",
+    "data": "No man ever steps in the same river twice.",
+    "metadata": {
+      "author": "Heraclitus",
+      "work": "Fragments",
+      "tradition": "Pre-Socratic",
+      "tags": [
+        "change",
+        "impermanence",
+        "identity"
+      ]
+    }
+  },
+  {
+    "id": "q047",
+    "data": "To be is to be perceived.",
+    "metadata": {
+      "author": "George Berkeley",
+      "work": "A Treatise Concerning the Principles of Human Knowledge",
+      "tradition": "Idealism",
+      "tags": [
+        "perception",
+        "metaphysics",
+        "mind"
+      ]
+    }
+  },
+  {
+    "id": "q048",
+    "data": "The unexamined life is not worth living.",
+    "metadata": {
+      "author": "Socrates",
+      "work": "Apology",
+      "tradition": "Classical philosophy",
+      "tags": [
+        "inquiry",
+        "ethics",
+        "self"
+      ]
+    }
+  },
+  {
+    "id": "q049",
+    "data": "Know thyself.",
+    "metadata": {
+      "author": "Delphic maxim",
+      "work": "Temple of Apollo at Delphi",
+      "tradition": "Greek philosophy",
+      "tags": [
+        "self-knowledge",
+        "wisdom",
+        "ethics"
+      ]
+    }
+  },
+  {
+    "id": "q050",
+    "data": "Happiness depends upon ourselves.",
+    "metadata": {
+      "author": "Aristotle",
+      "work": "Nicomachean Ethics",
+      "tradition": "Classical philosophy",
+      "tags": [
+        "happiness",
+        "ethics",
+        "agency"
+      ]
+    }
+  },
+  {
+    "id": "q051",
+    "data": "You have power over your mind, not outside events.",
+    "metadata": {
+      "author": "Marcus Aurelius",
+      "work": "Meditations",
+      "tradition": "Stoicism",
+      "tags": [
+        "mind",
+        "control",
+        "stoicism"
+      ]
+    }
+  },
+  {
+    "id": "q052",
+    "data": "The happiness of your life depends upon the quality of your thoughts.",
+    "metadata": {
+      "author": "Marcus Aurelius",
+      "work": "Meditations",
+      "tradition": "Stoicism",
+      "tags": [
+        "thought",
+        "happiness",
+        "practice"
+      ]
+    }
+  },
+  {
+    "id": "q053",
+    "data": "We suffer more often in imagination than in reality.",
+    "metadata": {
+      "author": "Seneca",
+      "work": "Letters from a Stoic",
+      "tradition": "Stoicism",
+      "tags": [
+        "suffering",
+        "imagination",
+        "mind"
+      ]
+    }
+  },
+  {
+    "id": "q054",
+    "data": "Freedom is the only worthy goal in life.",
+    "metadata": {
+      "author": "Epictetus",
+      "work": "Discourses",
+      "tradition": "Stoicism",
+      "tags": [
+        "freedom",
+        "discipline",
+        "ethics"
+      ]
+    }
+  },
+  {
+    "id": "q055",
+    "data": "Man is condemned to be free.",
+    "metadata": {
+      "author": "Jean-Paul Sartre",
+      "work": "Existentialism Is a Humanism",
+      "tradition": "Existentialism",
+      "tags": [
+        "freedom",
+        "responsibility",
+        "existence"
+      ]
+    }
+  },
+  {
+    "id": "q056",
+    "data": "One must imagine Sisyphus happy.",
+    "metadata": {
+      "author": "Albert Camus",
+      "work": "The Myth of Sisyphus",
+      "tradition": "Existentialism",
+      "tags": [
+        "absurd",
+        "meaning",
+        "resilience"
+      ]
+    }
+  },
+  {
+    "id": "q057",
+    "data": "He who has a why to live can bear almost any how.",
+    "metadata": {
+      "author": "Friedrich Nietzsche",
+      "work": "Twilight of the Idols",
+      "tradition": "Existential philosophy",
+      "tags": [
+        "meaning",
+        "resilience",
+        "will"
+      ]
+    }
+  },
+  {
+    "id": "q058",
+    "data": "Become who you are.",
+    "metadata": {
+      "author": "Friedrich Nietzsche",
+      "work": "Thus Spoke Zarathustra (theme)",
+      "tradition": "Existential philosophy",
+      "tags": [
+        "becoming",
+        "self",
+        "authenticity"
+      ]
+    }
+  },
+  {
+    "id": "q059",
+    "data": "The mystery of life is not a problem to be solved, but a reality to be experienced.",
+    "metadata": {
+      "author": "Soren Kierkegaard (attributed)",
+      "work": "Existential saying",
+      "tradition": "Existentialism",
+      "tags": [
+        "mystery",
+        "experience",
+        "life"
+      ]
+    }
+  },
+  {
+    "id": "q060",
+    "data": "What you seek is seeking you.",
+    "metadata": {
+      "author": "Rumi",
+      "work": "Poetry",
+      "tradition": "Sufi",
+      "tags": [
+        "seeking",
+        "unity",
+        "mysticism"
+      ]
+    }
+  }
+]
