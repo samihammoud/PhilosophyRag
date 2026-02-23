@@ -3,6 +3,7 @@ import { ChatMessage } from "./components/ChatMessage";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Send } from "lucide-react";
+import { QuoteUpload } from "./components/ui/quote-upload";
 
 interface Message {
   id: string;
@@ -126,6 +127,9 @@ export default function App() {
     },
   ]);
   const [input, setInput] = useState("");
+  const [quoteDraft, setQuoteDraft] = useState("");
+  const [quoteAuthor, setQuoteAuthor] = useState("");
+  const [uploadStatus, setUploadStatus] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -178,6 +182,38 @@ export default function App() {
     }
   };
 
+  const handleQuoteFileUpload = async (file: File) => {
+    try {
+      const text = await file.text();
+      const [firstLine = ""] = text
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
+      setQuoteDraft(firstLine);
+      setUploadStatus(`Loaded ${file.name}`);
+    } catch {
+      setUploadStatus("Failed to read file");
+    }
+  };
+
+  const handleManualQuotePost = () => {
+    const quote = quoteDraft.trim();
+    const author = quoteAuthor.trim();
+    if (!quote || !author) return;
+
+    const quoteMessage: Message = {
+      id: Date.now().toString(),
+      text: `${quote} — ${author}`,
+      isUser: false,
+      isQuote: true,
+    };
+
+    setMessages((prev) => [...prev, quoteMessage]);
+    setQuoteDraft("");
+    setQuoteAuthor("");
+    setUploadStatus("");
+  };
+
   return (
     <div className="min-h-screen w-full relative overflow-hidden font-sans">
       {/* Mirror Room Background */}
@@ -190,7 +226,7 @@ export default function App() {
       <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-slate-300/30 via-transparent to-transparent" />
 
       {/* Robot Character with Reflection */}
-      <div className="absolute bottom-8 left-8 flex flex-col items-center">
+      <div className="absolute bottom-8 left-8 z-20 flex flex-col items-center">
         <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden shadow-2xl border border-gray-300/50 backdrop-blur-sm bg-white/40 mb-2">
           <img
             src="https://images.unsplash.com/photo-1759395162739-84190996783c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwcm9ib3QlMjBzaXR0aW5nJTIwcm9jayUyMHplbnxlbnwxfHx8fDE3NzE1Mjk0NTl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
@@ -198,6 +234,17 @@ export default function App() {
             className="w-full h-full object-cover"
           />
         </div>
+
+        <QuoteUpload
+          quote={quoteDraft}
+          author={quoteAuthor}
+          uploadStatus={uploadStatus}
+          onQuoteChange={setQuoteDraft}
+          onAuthorChange={setQuoteAuthor}
+          onUpload={handleQuoteFileUpload}
+          onPostQuote={handleManualQuotePost}
+          className="w-64 relative z-30"
+        />
 
         {/* Mirror reflection */}
         <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden opacity-20 blur-sm scale-y-[-1]">
@@ -214,12 +261,7 @@ export default function App() {
         <div className="w-full max-w-2xl h-[70vh] flex flex-col">
           {/* Header */}
           <div className="mb-6 text-center">
-            <h1 className="text-3xl md:text-4xl font-light text-gray-800 tracking-tight">
-              Philosophy Stream
-            </h1>
-            <p className="text-gray-500 mt-1 text-sm font-light tracking-wide">
-              Center of Awareness
-            </p>
+            <h1 className="Courier New">Philosophy Stream</h1>
           </div>
 
           {/* Chat Card - Apple style */}
