@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/api/server.js",
-    "dev": "node src/api/server.js"
+    "dev": "node src/api/server.js",
+    "ingest:quotes": "node scripts/ingest-quotes.js"
   },
   "keywords": [],
   "author": "",

@@ -13,110 +13,16 @@ interface Message {
   explanation?: string;
 }
 
-// Mock philosophical quotes database
-const philosophicalQuotes = [
-  {
-    quote: "The unexamined life is not worth living.",
-    author: "Socrates",
-    explanation:
-      "Socrates believed that self-reflection and critical thinking are essential to human flourishing. Without examining our beliefs, values, and actions, we live passively rather than intentionally.",
-  },
-  {
-    quote: "I think, therefore I am.",
-    author: "René Descartes",
-    explanation:
-      "Descartes' foundational insight suggests that the very act of doubting one's existence proves that there is a thinking entity doing the doubting. This became the cornerstone of modern philosophy.",
-  },
-  {
-    quote: "Man is condemned to be free.",
-    author: "Jean-Paul Sartre",
-    explanation:
-      "Sartre argued that humans are fundamentally free, but this freedom comes with the burden of responsibility. We cannot escape making choices, and with each choice, we define ourselves.",
-  },
-  {
-    quote: "The only true wisdom is in knowing you know nothing.",
-    author: "Socrates",
-    explanation:
-      "This paradox emphasizes intellectual humility. Recognizing the limits of our knowledge opens us to genuine learning and prevents the arrogance of false certainty.",
-  },
-  {
-    quote: "He who has a why to live can bear almost any how.",
-    author: "Friedrich Nietzsche",
-    explanation:
-      "Nietzsche suggests that having a sense of purpose or meaning makes even the most difficult circumstances bearable. Purpose provides resilience in the face of suffering.",
-  },
-  {
-    quote: "The mind is everything. What you think you become.",
-    author: "Buddha",
-    explanation:
-      "This teaching emphasizes the power of thought in shaping our reality. Our mental patterns and beliefs fundamentally influence our actions, habits, and ultimately our character.",
-  },
-  {
-    quote: "To be is to be perceived.",
-    author: "George Berkeley",
-    explanation:
-      "Berkeley's idealist philosophy argued that objects only exist insofar as they are perceived by a mind. This challenges our common-sense notion of an external, mind-independent reality.",
-  },
-  {
-    quote:
-      "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
-    author: "Aristotle",
-    explanation:
-      "Aristotle believed that virtue and character are developed through consistent practice. Our repeated actions shape who we become, making habit formation central to living well.",
-  },
-];
-
-function getRelevantQuote(userMessage: string): {
+interface PostQuoteResponse {
+  ok: boolean;
   quote: string;
   author: string;
   explanation: string;
-} {
-  // Simple keyword matching for demonstration
-  const lowerMessage = userMessage.toLowerCase();
-
-  if (
-    lowerMessage.includes("meaning") ||
-    lowerMessage.includes("purpose") ||
-    lowerMessage.includes("why")
-  ) {
-    return philosophicalQuotes[4];
-  } else if (
-    lowerMessage.includes("think") ||
-    lowerMessage.includes("thought") ||
-    lowerMessage.includes("mind")
-  ) {
-    return philosophicalQuotes[5];
-  } else if (
-    lowerMessage.includes("know") ||
-    lowerMessage.includes("wisdom") ||
-    lowerMessage.includes("learn")
-  ) {
-    return philosophicalQuotes[3];
-  } else if (
-    lowerMessage.includes("free") ||
-    lowerMessage.includes("choice") ||
-    lowerMessage.includes("decide")
-  ) {
-    return philosophicalQuotes[2];
-  } else if (
-    lowerMessage.includes("exist") ||
-    lowerMessage.includes("reality") ||
-    lowerMessage.includes("being")
-  ) {
-    return philosophicalQuotes[1];
-  } else if (
-    lowerMessage.includes("habit") ||
-    lowerMessage.includes("practice") ||
-    lowerMessage.includes("excellence")
-  ) {
-    return philosophicalQuotes[7];
-  }
-
-  // Default to a random quote
-  return philosophicalQuotes[
-    Math.floor(Math.random() * philosophicalQuotes.length)
-  ];
 }
+
+const QUOTE_ENDPOINT =
+  ((import.meta as unknown as { env?: { VITE_QUOTE_ENDPOINT?: string } }).env
+    ?.VITE_QUOTE_ENDPOINT as string | undefined) || "/api/quote";
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([
@@ -140,39 +46,65 @@ export default function App() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!input.trim()) return;
+    const userInput = input.trim();
 
     const newMessage: Message = {
       id: Date.now().toString(),
-      text: input,
+      text: userInput,
       isUser: true,
     };
 
     setMessages((prev) => [...prev, newMessage]);
     setInput("");
 
-    handlePostQuote();
+    await handlePostQuote();
   };
 
-  const handlePostQuote = () => {
-    const userMessages = messages.filter((m) => m.isUser);
-    if (userMessages.length === 0) return;
+  const handlePostQuote = async () => {
+    try {
+      const response = await fetch(QUOTE_ENDPOINT);
+      const contentType = response.headers.get("content-type") || "";
+      const rawBody = await response.text();
 
-    const lastUserMessage = userMessages[userMessages.length - 1];
-    const { quote, author, explanation } = getRelevantQuote(
-      lastUserMessage.text,
-    );
+      if (!contentType.includes("application/json")) {
+        throw new Error(
+          `Expected JSON from ${QUOTE_ENDPOINT} but got ${contentType || "unknown content type"}`,
+        );
+      }
 
-    const quoteMessage: Message = {
-      id: Date.now().toString(),
-      text: `${quote} — ${author}`,
-      isUser: false,
-      isQuote: true,
-      explanation,
-    };
+      const payload = JSON.parse(rawBody) as PostQuoteResponse | { error?: string };
 
-    setMessages((prev) => [...prev, quoteMessage]);
+      if (!response.ok || !("quote" in payload)) {
+        throw new Error(
+          ("error" in payload && payload.error) ||
+            `Quote request failed (${response.status})`,
+        );
+      }
+
+      const quoteMessage: Message = {
+        id: Date.now().toString(),
+        text: `${payload.quote} — ${payload.author}`,
+        isUser: false,
+        isQuote: true,
+        explanation: payload.explanation,
+      };
+
+      setMessages((prev) => [...prev, quoteMessage]);
+    } catch (error) {
+      console.error("Failed to retrieve quote:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Unknown network or server error";
+      const fallbackMessage: Message = {
+        id: Date.now().toString(),
+        text: `I couldn't retrieve a quote from the database right now. ${errorMessage}`,
+        isUser: false,
+      };
+      setMessages((prev) => [...prev, fallbackMessage]);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -260,9 +192,6 @@ export default function App() {
       <div className="relative z-10 flex items-center justify-center min-h-screen p-4 md:p-8">
         <div className="w-full max-w-2xl h-[70vh] flex flex-col">
           {/* Header */}
-          <div className="mb-6 text-center">
-            <h1 className="Courier New">Philosophy Stream</h1>
-          </div>
 
           {/* Chat Card - Apple style */}
           <div className="flex-1 bg-white/60 backdrop-blur-2xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-200/50 flex flex-col overflow-hidden">

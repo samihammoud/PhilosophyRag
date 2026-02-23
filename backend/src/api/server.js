@@ -30,6 +30,47 @@ app.get("/", (req, res) => {
   });
 });
 
+async function getRandomQuoteFromDb() {
+  const records = await getEmbeddings({ limit: 200 });
+  const documents = records.documents || [];
+  const metadatas = records.metadatas || [];
+
+  if (!Array.isArray(documents) || documents.length === 0) {
+    return null;
+  }
+
+  const randomIndex = Math.floor(Math.random() * documents.length);
+  const document = documents[randomIndex];
+  const metadata = metadatas[randomIndex] || {};
+
+  return {
+    quote: document,
+    author: metadata.author || "Unknown",
+    explanation: metadata.explanation || "",
+    match: {
+      id: records.ids?.[randomIndex] || null,
+      metadata,
+    },
+  };
+}
+
+app.get("/quote", async (req, res) => {
+  try {
+    const result = await getRandomQuoteFromDb();
+    if (!result) {
+      return res.status(404).json({ error: "No quotes found in database" });
+    }
+
+    res.json({
+      ok: true,
+      ...result,
+    });
+  } catch (error) {
+    console.error("Quote retrieval failed:", error.message);
+    res.status(500).json({ error: "Failed to retrieve quote from database" });
+  }
+});
+
 app.post("/ask", async (req, res) => {
   try {
     const { question } = req.body;
