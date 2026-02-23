@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { ChatMessage } from './components/ChatMessage';
-import { Button } from './components/ui/button';
-import { Input } from './components/ui/input';
-import { Send } from 'lucide-react';
+import { useState, useRef, useEffect } from "react";
+import { ChatMessage } from "./components/ChatMessage";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Send } from "lucide-react";
 
 interface Message {
   id: string;
@@ -17,80 +17,119 @@ const philosophicalQuotes = [
   {
     quote: "The unexamined life is not worth living.",
     author: "Socrates",
-    explanation: "Socrates believed that self-reflection and critical thinking are essential to human flourishing. Without examining our beliefs, values, and actions, we live passively rather than intentionally."
+    explanation:
+      "Socrates believed that self-reflection and critical thinking are essential to human flourishing. Without examining our beliefs, values, and actions, we live passively rather than intentionally.",
   },
   {
     quote: "I think, therefore I am.",
     author: "René Descartes",
-    explanation: "Descartes' foundational insight suggests that the very act of doubting one's existence proves that there is a thinking entity doing the doubting. This became the cornerstone of modern philosophy."
+    explanation:
+      "Descartes' foundational insight suggests that the very act of doubting one's existence proves that there is a thinking entity doing the doubting. This became the cornerstone of modern philosophy.",
   },
   {
     quote: "Man is condemned to be free.",
     author: "Jean-Paul Sartre",
-    explanation: "Sartre argued that humans are fundamentally free, but this freedom comes with the burden of responsibility. We cannot escape making choices, and with each choice, we define ourselves."
+    explanation:
+      "Sartre argued that humans are fundamentally free, but this freedom comes with the burden of responsibility. We cannot escape making choices, and with each choice, we define ourselves.",
   },
   {
     quote: "The only true wisdom is in knowing you know nothing.",
     author: "Socrates",
-    explanation: "This paradox emphasizes intellectual humility. Recognizing the limits of our knowledge opens us to genuine learning and prevents the arrogance of false certainty."
+    explanation:
+      "This paradox emphasizes intellectual humility. Recognizing the limits of our knowledge opens us to genuine learning and prevents the arrogance of false certainty.",
   },
   {
     quote: "He who has a why to live can bear almost any how.",
     author: "Friedrich Nietzsche",
-    explanation: "Nietzsche suggests that having a sense of purpose or meaning makes even the most difficult circumstances bearable. Purpose provides resilience in the face of suffering."
+    explanation:
+      "Nietzsche suggests that having a sense of purpose or meaning makes even the most difficult circumstances bearable. Purpose provides resilience in the face of suffering.",
   },
   {
     quote: "The mind is everything. What you think you become.",
     author: "Buddha",
-    explanation: "This teaching emphasizes the power of thought in shaping our reality. Our mental patterns and beliefs fundamentally influence our actions, habits, and ultimately our character."
+    explanation:
+      "This teaching emphasizes the power of thought in shaping our reality. Our mental patterns and beliefs fundamentally influence our actions, habits, and ultimately our character.",
   },
   {
     quote: "To be is to be perceived.",
     author: "George Berkeley",
-    explanation: "Berkeley's idealist philosophy argued that objects only exist insofar as they are perceived by a mind. This challenges our common-sense notion of an external, mind-independent reality."
+    explanation:
+      "Berkeley's idealist philosophy argued that objects only exist insofar as they are perceived by a mind. This challenges our common-sense notion of an external, mind-independent reality.",
   },
   {
-    quote: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+    quote:
+      "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
     author: "Aristotle",
-    explanation: "Aristotle believed that virtue and character are developed through consistent practice. Our repeated actions shape who we become, making habit formation central to living well."
-  }
+    explanation:
+      "Aristotle believed that virtue and character are developed through consistent practice. Our repeated actions shape who we become, making habit formation central to living well.",
+  },
 ];
 
-function getRelevantQuote(userMessage: string): { quote: string; author: string; explanation: string } {
+function getRelevantQuote(userMessage: string): {
+  quote: string;
+  author: string;
+  explanation: string;
+} {
   // Simple keyword matching for demonstration
   const lowerMessage = userMessage.toLowerCase();
-  
-  if (lowerMessage.includes('meaning') || lowerMessage.includes('purpose') || lowerMessage.includes('why')) {
+
+  if (
+    lowerMessage.includes("meaning") ||
+    lowerMessage.includes("purpose") ||
+    lowerMessage.includes("why")
+  ) {
     return philosophicalQuotes[4];
-  } else if (lowerMessage.includes('think') || lowerMessage.includes('thought') || lowerMessage.includes('mind')) {
+  } else if (
+    lowerMessage.includes("think") ||
+    lowerMessage.includes("thought") ||
+    lowerMessage.includes("mind")
+  ) {
     return philosophicalQuotes[5];
-  } else if (lowerMessage.includes('know') || lowerMessage.includes('wisdom') || lowerMessage.includes('learn')) {
+  } else if (
+    lowerMessage.includes("know") ||
+    lowerMessage.includes("wisdom") ||
+    lowerMessage.includes("learn")
+  ) {
     return philosophicalQuotes[3];
-  } else if (lowerMessage.includes('free') || lowerMessage.includes('choice') || lowerMessage.includes('decide')) {
+  } else if (
+    lowerMessage.includes("free") ||
+    lowerMessage.includes("choice") ||
+    lowerMessage.includes("decide")
+  ) {
     return philosophicalQuotes[2];
-  } else if (lowerMessage.includes('exist') || lowerMessage.includes('reality') || lowerMessage.includes('being')) {
+  } else if (
+    lowerMessage.includes("exist") ||
+    lowerMessage.includes("reality") ||
+    lowerMessage.includes("being")
+  ) {
     return philosophicalQuotes[1];
-  } else if (lowerMessage.includes('habit') || lowerMessage.includes('practice') || lowerMessage.includes('excellence')) {
+  } else if (
+    lowerMessage.includes("habit") ||
+    lowerMessage.includes("practice") ||
+    lowerMessage.includes("excellence")
+  ) {
     return philosophicalQuotes[7];
   }
-  
+
   // Default to a random quote
-  return philosophicalQuotes[Math.floor(Math.random() * philosophicalQuotes.length)];
+  return philosophicalQuotes[
+    Math.floor(Math.random() * philosophicalQuotes.length)
+  ];
 }
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
-      text: 'Welcome to Philosophy Stream. Share your philosophical questions, and I will offer wisdom from the great thinkers.',
-      isUser: false
-    }
+      id: "1",
+      text: "Welcome to Philosophy Stream. Share your philosophical questions, and I will offer wisdom from the great thinkers.",
+      isUser: false,
+    },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -103,33 +142,37 @@ export default function App() {
     const newMessage: Message = {
       id: Date.now().toString(),
       text: input,
-      isUser: true
+      isUser: true,
     };
 
-    setMessages(prev => [...prev, newMessage]);
-    setInput('');
+    setMessages((prev) => [...prev, newMessage]);
+    setInput("");
+
+    handlePostQuote();
   };
 
   const handlePostQuote = () => {
-    const userMessages = messages.filter(m => m.isUser);
+    const userMessages = messages.filter((m) => m.isUser);
     if (userMessages.length === 0) return;
 
     const lastUserMessage = userMessages[userMessages.length - 1];
-    const { quote, author, explanation } = getRelevantQuote(lastUserMessage.text);
+    const { quote, author, explanation } = getRelevantQuote(
+      lastUserMessage.text,
+    );
 
     const quoteMessage: Message = {
       id: Date.now().toString(),
       text: `${quote} — ${author}`,
       isUser: false,
       isQuote: true,
-      explanation
+      explanation,
     };
 
-    setMessages(prev => [...prev, quoteMessage]);
+    setMessages((prev) => [...prev, quoteMessage]);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -139,26 +182,26 @@ export default function App() {
     <div className="min-h-screen w-full relative overflow-hidden font-sans">
       {/* Mirror Room Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-100 via-gray-50 to-slate-200" />
-      
+
       {/* Subtle gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-transparent" />
-      
+
       {/* Reflective floor gradient */}
       <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-slate-300/30 via-transparent to-transparent" />
 
       {/* Robot Character with Reflection */}
       <div className="absolute bottom-8 left-8 flex flex-col items-center">
         <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden shadow-2xl border border-gray-300/50 backdrop-blur-sm bg-white/40 mb-2">
-          <img 
+          <img
             src="https://images.unsplash.com/photo-1759395162739-84190996783c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwcm9ib3QlMjBzaXR0aW5nJTIwcm9jayUyMHplbnxlbnwxfHx8fDE3NzE1Mjk0NTl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
             alt="Philosophical Assistant"
             className="w-full h-full object-cover"
           />
         </div>
-        
+
         {/* Mirror reflection */}
         <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden opacity-20 blur-sm scale-y-[-1]">
-          <img 
+          <img
             src="https://images.unsplash.com/photo-1759395162739-84190996783c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwcm9ib3QlMjBzaXR0aW5nJTIwcm9jayUyMHplbnxlbnwxfHx8fDE3NzE1Mjk0NTl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
             alt=""
             className="w-full h-full object-cover"
@@ -174,14 +217,16 @@ export default function App() {
             <h1 className="text-3xl md:text-4xl font-light text-gray-800 tracking-tight">
               Philosophy Stream
             </h1>
-            <p className="text-gray-500 mt-1 text-sm font-light tracking-wide">Center of Awareness</p>
+            <p className="text-gray-500 mt-1 text-sm font-light tracking-wide">
+              Center of Awareness
+            </p>
           </div>
 
           {/* Chat Card - Apple style */}
           <div className="flex-1 bg-white/60 backdrop-blur-2xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-200/50 flex flex-col overflow-hidden">
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto px-8 py-8 space-y-3">
-              {messages.map(message => (
+              {messages.map((message) => (
                 <ChatMessage
                   key={message.id}
                   message={message.text}
@@ -211,14 +256,14 @@ export default function App() {
                   <Send className="w-5 h-5" />
                 </Button>
               </div>
-              
-              <Button
+
+              {/* <Button
                 onClick={handlePostQuote}
-                disabled={messages.filter(m => m.isUser).length === 0}
+                disabled={messages.filter((m) => m.isUser).length === 0}
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-2xl py-6 shadow-md font-light tracking-wide transition-all"
               >
                 Post Quote
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

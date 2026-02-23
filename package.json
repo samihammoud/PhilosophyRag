@@ -5,5 +5,8 @@
     "start": "sh -c 'chroma run & npm --prefix backend start & npm --prefix frontend run dev & wait'",
     "dev": "npm start",
     "stop": "sh -c 'for p in 3000 5173 8000; do pid=$(lsof -ti tcp:$p); if [ -n \"$pid\" ]; then kill $pid 2>/dev/null || true; fi; done'"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8"
   }
 }
