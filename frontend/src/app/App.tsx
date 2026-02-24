@@ -1,9 +1,34 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  BookOpenText,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Send,
+  Sparkles,
+  Tags,
+} from "lucide-react";
+
 import { ChatMessage } from "./components/ChatMessage";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
-import { Send } from "lucide-react";
 import { QuoteUpload } from "./components/ui/quote-upload";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "./components/ui/sheet";
+import { ScrollArea } from "./components/ui/scroll-area";
 
 interface Message {
   id: string;
@@ -30,7 +55,21 @@ interface AskResponse {
   } | null;
 }
 
+interface CollectionMetadata {
+  author?: string;
+  tradition?: string;
+}
+
+interface CollectionsResponse {
+  ok: boolean;
+  documents?: string[];
+  metadatas?: CollectionMetadata[];
+  ids?: string[];
+  error?: string;
+}
+
 const ASK_ENDPOINT = "http://localhost:3000/ask";
+const COLLECTIONS_ENDPOINT = "http://localhost:3000/getCollections";
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([
@@ -44,6 +83,13 @@ export default function App() {
   const [quoteDraft, setQuoteDraft] = useState("");
   const [quoteAuthor, setQuoteAuthor] = useState("");
   const [uploadStatus, setUploadStatus] = useState("");
+  const [isAsking, setIsAsking] = useState(false);
+  const [isLibraryOpen, setIsLibraryOpen] = useState(false);
+  const [isLoadingQuotes, setIsLoadingQuotes] = useState(false);
+  const [libraryError, setLibraryError] = useState("");
+  const [libraryQuotes, setLibraryQuotes] = useState<
+    { id: string; document: string; author: string; tradition: string }[]
+  >([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -54,8 +100,13 @@ export default function App() {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    if (!isLibraryOpen) return;
+    void loadCollections();
+  }, [isLibraryOpen]);
+
   const handleSendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isAsking) return;
     const userInput = input.trim();
 
     const newMessage: Message = {
@@ -71,6 +122,8 @@ export default function App() {
   };
 
   const handlePostQuote = async (question: string) => {
+    setIsAsking(true);
+
     try {
       const response = await fetch(ASK_ENDPOINT, {
         method: "POST",
@@ -80,19 +133,15 @@ export default function App() {
         body: JSON.stringify({ question }),
       });
 
-      //payload depends on response, converting to interface to initilize fields
       const payload = (await response.json()) as AskResponse & {
         error?: string;
       };
 
       if (!response.ok || !payload.answer) {
-        throw new Error(
-          payload.error || `Ask request failed (${response.status})`,
-        );
+        throw new Error(payload.error || `Ask request failed (${response.status})`);
       }
 
-      const matchedQuote =
-        payload.match?.document || "No matching quote found.";
+      const matchedQuote = payload.match?.document || "No matching quote found.";
       const matchedAuthor = payload.match?.metadata?.author || "Unknown";
 
       const quoteMessage: Message = {
@@ -107,22 +156,55 @@ export default function App() {
     } catch (error) {
       console.error("Failed to retrieve quote:", error);
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Unknown network or server error";
+        error instanceof Error ? error.message : "Unknown network or server error";
       const fallbackMessage: Message = {
         id: Date.now().toString(),
         text: `I couldn't retrieve a quote from the database right now. ${errorMessage}`,
         isUser: false,
       };
       setMessages((prev) => [...prev, fallbackMessage]);
+    } finally {
+      setIsAsking(false);
+    }
+  };
+
+  const loadCollections = async () => {
+    setIsLoadingQuotes(true);
+    setLibraryError("");
+
+    try {
+      const response = await fetch(COLLECTIONS_ENDPOINT);
+      const payload = (await response.json()) as CollectionsResponse;
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || "Failed to load quote library");
+      }
+
+      const documents = payload.documents || [];
+      const metadatas = payload.metadatas || [];
+      const ids = payload.ids || [];
+
+      setLibraryQuotes(
+        documents.map((document, index) => ({
+          id: ids[index] || String(index),
+          document,
+          author: metadatas[index]?.author || "Unknown",
+          tradition: metadatas[index]?.tradition || "Unlabeled",
+        })),
+      );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown network or server error";
+      setLibraryError(errorMessage);
+    } finally {
+      setIsLoadingQuotes(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage();
+      void handleSendMessage();
     }
   };
 
@@ -155,60 +237,91 @@ export default function App() {
     setMessages((prev) => [...prev, quoteMessage]);
     setQuoteDraft("");
     setQuoteAuthor("");
-    setUploadStatus("");
+    setUploadStatus("Quote added to chat");
   };
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden font-sans">
-      {/* Mirror Room Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-100 via-gray-50 to-slate-200" />
+    <div className="relative min-h-screen overflow-hidden bg-slate-50 font-sans text-slate-900">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(148,163,184,0.28),transparent_45%),radial-gradient(circle_at_100%_0%,rgba(30,41,59,0.12),transparent_40%),radial-gradient(circle_at_50%_100%,rgba(226,232,240,0.7),transparent_60%)]" />
+      <div className="pointer-events-none absolute -top-16 -left-12 h-56 w-56 rounded-full bg-white/70 blur-2xl" />
+      <div className="pointer-events-none absolute right-0 bottom-0 h-64 w-64 rounded-full bg-slate-300/30 blur-3xl" />
 
-      {/* Subtle gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-transparent" />
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 md:px-8 lg:py-10">
+        <header className="flex flex-col gap-3 rounded-3xl border border-slate-200/70 bg-white/80 px-6 py-5 shadow-[0_8px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.24em] text-slate-500 uppercase">
+              Philosophy Stream
+            </p>
+            <h1 className="mt-1 text-2xl font-semibold text-slate-900 md:text-3xl">
+              Thoughtful guidance, grounded in retrieval.
+            </h1>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 shadow-sm">
+            <Sparkles className="size-3.5" />
+            Modern retrieval chat
+          </div>
+        </header>
 
-      {/* Reflective floor gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-slate-300/30 via-transparent to-transparent" />
+        <section className="grid gap-6 lg:grid-cols-[300px_1fr]">
+          <aside className="space-y-4 rounded-3xl border border-slate-200/70 bg-white/75 p-4 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="h-12 w-full justify-start gap-2 rounded-2xl bg-slate-900 text-white shadow-md hover:bg-slate-800">
+                  <Plus className="size-4" />
+                  Add Quote Manually
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-xl rounded-2xl border-slate-200 bg-slate-50 p-0">
+                <DialogHeader className="border-b border-slate-200 bg-white px-6 py-4">
+                  <DialogTitle className="text-slate-900">Create Quote</DialogTitle>
+                  <DialogDescription className="text-slate-600">
+                    Add a quote to the live conversation or import the first line from a
+                    file.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="p-6">
+                  <QuoteUpload
+                    quote={quoteDraft}
+                    author={quoteAuthor}
+                    uploadStatus={uploadStatus}
+                    onQuoteChange={setQuoteDraft}
+                    onAuthorChange={setQuoteAuthor}
+                    onUpload={handleQuoteFileUpload}
+                    onPostQuote={handleManualQuotePost}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
 
-      {/* Robot Character with Reflection */}
-      <div className="absolute bottom-8 left-8 z-20 flex flex-col items-center">
-        <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden shadow-2xl border border-gray-300/50 backdrop-blur-sm bg-white/40 mb-2">
-          <img
-            src="https://images.unsplash.com/photo-1759395162739-84190996783c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwcm9ib3QlMjBzaXR0aW5nJTIwcm9jayUyMHplbnxlbnwxfHx8fDE3NzE1Mjk0NTl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-            alt="Philosophical Assistant"
-            className="w-full h-full object-cover"
-          />
-        </div>
+            <Button
+              variant="outline"
+              className="h-12 w-full justify-start gap-2 rounded-2xl border-slate-300 bg-white"
+              onClick={() => setIsLibraryOpen(true)}
+            >
+              <BookOpenText className="size-4" />
+              View All Quotes
+            </Button>
 
-        <QuoteUpload
-          quote={quoteDraft}
-          author={quoteAuthor}
-          uploadStatus={uploadStatus}
-          onQuoteChange={setQuoteDraft}
-          onAuthorChange={setQuoteAuthor}
-          onUpload={handleQuoteFileUpload}
-          onPostQuote={handleManualQuotePost}
-          className="w-64 relative z-30"
-        />
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-4">
+              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                Session Snapshot
+              </p>
+              <div className="mt-3 space-y-2 text-sm text-slate-700">
+                <p>Messages: {messages.length}</p>
+                <p>Loaded quotes: {libraryQuotes.length}</p>
+              </div>
+            </div>
+          </aside>
 
-        {/* Mirror reflection */}
-        <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden opacity-20 blur-sm scale-y-[-1]">
-          <img
-            src="https://images.unsplash.com/photo-1759395162739-84190996783c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwcm9ib3QlMjBzaXR0aW5nJTIwcm9jayUyMHplbnxlbnwxfHx8fDE3NzE1Mjk0NTl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
+          <main className="flex h-[72vh] flex-col rounded-3xl border border-slate-200/70 bg-white/78 shadow-[0_14px_40px_rgba(15,23,42,0.08)] backdrop-blur-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+              <p className="text-sm font-medium text-slate-600">Conversation</p>
+              <p className="text-xs text-slate-500">
+                {isAsking ? "Thinking..." : "Ready"}
+              </p>
+            </div>
 
-      {/* Main Chat Container */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4 md:p-8">
-        <div className="w-full max-w-2xl h-[70vh] flex flex-col">
-          {/* Header */}
-
-          {/* Chat Card - Apple style */}
-          <div className="flex-1 bg-white/60 backdrop-blur-2xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-200/50 flex flex-col overflow-hidden">
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto px-8 py-8 space-y-3">
+            <div className="flex-1 overflow-y-auto px-6 py-6 md:px-8">
               {messages.map((message) => (
                 <ChatMessage
                   key={message.id}
@@ -221,36 +334,94 @@ export default function App() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area */}
-            <div className="p-6 bg-white/40 backdrop-blur-xl border-t border-gray-200/50">
-              <div className="flex gap-3 mb-3">
+            <div className="border-t border-slate-200/80 bg-white/65 p-4 md:p-6">
+              <div className="flex gap-3">
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Ask a philosophical question..."
-                  className="flex-1 bg-white/80 backdrop-blur-sm border-gray-300/50 focus:bg-white focus:border-gray-400/50 transition-all rounded-2xl px-5 py-6 text-gray-800 placeholder:text-gray-400 shadow-sm"
+                  className="h-12 flex-1 rounded-2xl border-slate-300 bg-white"
                 />
                 <Button
-                  onClick={handleSendMessage}
-                  disabled={!input.trim()}
-                  className="bg-gray-900 hover:bg-gray-800 text-white rounded-2xl px-6 shadow-md transition-all"
+                  onClick={() => void handleSendMessage()}
+                  disabled={!input.trim() || isAsking}
+                  className="h-12 rounded-2xl bg-slate-900 px-5 text-white hover:bg-slate-800"
                 >
-                  <Send className="w-5 h-5" />
+                  {isAsking ? (
+                    <Loader2 className="size-5 animate-spin" />
+                  ) : (
+                    <Send className="size-5" />
+                  )}
                 </Button>
               </div>
-
-              {/* <Button
-                onClick={handlePostQuote}
-                disabled={messages.filter((m) => m.isUser).length === 0}
-                className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-2xl py-6 shadow-md font-light tracking-wide transition-all"
-              >
-                Post Quote
-              </Button> */}
             </div>
-          </div>
-        </div>
+          </main>
+        </section>
       </div>
+
+      <Sheet open={isLibraryOpen} onOpenChange={setIsLibraryOpen}>
+        <SheetContent className="w-[96vw] max-w-2xl border-slate-200 bg-slate-50 p-0 sm:w-[640px] sm:max-w-2xl">
+          <SheetHeader className="border-b border-slate-200 bg-white px-6 py-4">
+            <SheetTitle className="text-slate-900">Quote Library</SheetTitle>
+            <SheetDescription className="text-slate-600">
+              Full quote collection retrieved from the vector store.
+            </SheetDescription>
+            <div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2 gap-2 rounded-xl border-slate-300 bg-white"
+                onClick={() => void loadCollections()}
+                disabled={isLoadingQuotes}
+              >
+                <RefreshCw className={`size-4 ${isLoadingQuotes ? "animate-spin" : ""}`} />
+                Refresh
+              </Button>
+            </div>
+          </SheetHeader>
+
+          <ScrollArea className="h-[calc(100vh-140px)] px-6 py-5">
+            {isLoadingQuotes && (
+              <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
+                Loading quotes...
+              </div>
+            )}
+
+            {!isLoadingQuotes && libraryError && (
+              <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                Failed to load quotes: {libraryError}
+              </div>
+            )}
+
+            {!isLoadingQuotes && !libraryError && libraryQuotes.length === 0 && (
+              <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
+                No quotes found.
+              </div>
+            )}
+
+            <div className="space-y-3 pb-8">
+              {libraryQuotes.map((quote) => (
+                <article
+                  key={quote.id}
+                  className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                >
+                  <p className="text-sm leading-relaxed text-slate-800">"{quote.document}"</p>
+                  <div className="mt-2 flex items-center justify-between gap-3">
+                    <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                      {quote.author}
+                    </p>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2 py-1 text-[10px] font-semibold tracking-wide text-slate-700 uppercase">
+                      <Tags className="size-3" />
+                      {quote.tradition}
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

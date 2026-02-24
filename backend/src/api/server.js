@@ -223,7 +223,12 @@ app.get("/getCollections", async (req, res) => {
   try {
     const ids = parseIdsQuery(req.query.ids);
     const records = await getEmbeddings({ ids });
-    res.json({ ok: true, documents: records.documents });
+    res.json({
+      ok: true,
+      documents: records.documents || [],
+      metadatas: records.metadatas || [],
+      ids: records.ids || [],
+    });
   } catch (error) {
     console.error("Chroma read failed:", error.message);
     res.status(500).json({ error: "Failed to read from Chroma" });
