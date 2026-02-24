@@ -13,16 +13,24 @@ interface Message {
   explanation?: string;
 }
 
-interface PostQuoteResponse {
+interface AskResponse {
   ok: boolean;
-  quote: string;
-  author: string;
-  explanation: string;
+  answer: string;
+  match?: {
+    id?: string;
+    document?: string;
+    distance?: number;
+    metadata?: {
+      author?: string;
+      tradition?: string;
+      work?: string;
+      source?: string;
+      tags?: string[];
+    };
+  } | null;
 }
 
-const QUOTE_ENDPOINT =
-  ((import.meta as unknown as { env?: { VITE_QUOTE_ENDPOINT?: string } }).env
-    ?.VITE_QUOTE_ENDPOINT as string | undefined) || "/api/quote";
+const ASK_ENDPOINT = "http://localhost:3000/ask";
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([
@@ -59,36 +67,40 @@ export default function App() {
     setMessages((prev) => [...prev, newMessage]);
     setInput("");
 
-    await handlePostQuote();
+    await handlePostQuote(userInput);
   };
 
-  const handlePostQuote = async () => {
+  const handlePostQuote = async (question: string) => {
     try {
-      const response = await fetch(QUOTE_ENDPOINT);
-      const contentType = response.headers.get("content-type") || "";
-      const rawBody = await response.text();
+      const response = await fetch(ASK_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question }),
+      });
 
-      if (!contentType.includes("application/json")) {
+      //payload depends on response, converting to interface to initilize fields
+      const payload = (await response.json()) as AskResponse & {
+        error?: string;
+      };
+
+      if (!response.ok || !payload.answer) {
         throw new Error(
-          `Expected JSON from ${QUOTE_ENDPOINT} but got ${contentType || "unknown content type"}`,
+          payload.error || `Ask request failed (${response.status})`,
         );
       }
 
-      const payload = JSON.parse(rawBody) as PostQuoteResponse | { error?: string };
-
-      if (!response.ok || !("quote" in payload)) {
-        throw new Error(
-          ("error" in payload && payload.error) ||
-            `Quote request failed (${response.status})`,
-        );
-      }
+      const matchedQuote =
+        payload.match?.document || "No matching quote found.";
+      const matchedAuthor = payload.match?.metadata?.author || "Unknown";
 
       const quoteMessage: Message = {
         id: Date.now().toString(),
-        text: `${payload.quote} — ${payload.author}`,
+        text: `${matchedQuote} — ${matchedAuthor}`,
         isUser: false,
         isQuote: true,
-        explanation: payload.explanation,
+        explanation: payload.answer,
       };
 
       setMessages((prev) => [...prev, quoteMessage]);
