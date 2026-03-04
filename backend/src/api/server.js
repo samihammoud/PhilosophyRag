@@ -2,12 +2,11 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { randomUUID } from "node:crypto";
-import { askChat, createEmbedding } from "../services/llm.js";
-import {
-  getEmbeddings,
-  querySimilarEmbeddings,
-  upsertEmbedding,
-} from "../db/chromaDB.js";
+import { createEmbedding } from "../services/llm.js";
+import { getEmbeddings, upsertEmbedding } from "../db/chromaDB.js";
+
+// helper functions powered by Langchain
+import { askWithLangchain, getTopMatch } from "../services/langchain.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -54,30 +53,12 @@ app.post("/ask", async (req, res) => {
       return res.status(400).json({ error: "question is required" });
     }
 
-    const questionEmbedding = await createEmbedding(question);
-    const matches = await querySimilarEmbeddings({
-      queryEmbedding: questionEmbedding,
-      limit: 3,
-    });
-    const topMatch = matches[0] || null;
+    // use langchain-powered pipeline for both retrieval & response
+    const [answer, topMatch] = await Promise.all([
+      askWithLangchain(question),
+      getTopMatch(question),
+    ]);
 
-    const prompt = topMatch?.document
-      ? [
-          "You are a compassionate philosophy guide.",
-          "Help the user with their issue using only the single retrieved quote below.",
-          "Keep the tone encouraging, clear, and practical.",
-          "Do not reference any other philosophers, quotes, or sources.",
-          "begin your response by explaining how it applies to the user's question.",
-          "End with one short actionable step the user can try today.",
-          "Keep the responses brief, and the actionable step quick",
-          `Retrieved quote: "${topMatch.document}"`,
-          `Author: ${topMatch.metadata?.author || "Unknown"}`,
-          "",
-          `Question:\n${question}`,
-        ].join("\n")
-      : question;
-
-    const answer = await askChat(prompt);
     res.json({
       ok: true,
       answer,
