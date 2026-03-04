@@ -30,30 +30,6 @@ app.get("/", (req, res) => {
   });
 });
 
-async function getRandomQuoteFromDb() {
-  const records = await getEmbeddings({ limit: 200 });
-  const documents = records.documents || [];
-  const metadatas = records.metadatas || [];
-
-  if (!Array.isArray(documents) || documents.length === 0) {
-    return null;
-  }
-
-  const randomIndex = Math.floor(Math.random() * documents.length);
-  const document = documents[randomIndex];
-  const metadata = metadatas[randomIndex] || {};
-
-  return {
-    quote: document,
-    author: metadata.author || "Unknown",
-    explanation: metadata.explanation || "",
-    match: {
-      id: records.ids?.[randomIndex] || null,
-      metadata,
-    },
-  };
-}
-
 app.get("/quote", async (req, res) => {
   try {
     const result = await getRandomQuoteFromDb();

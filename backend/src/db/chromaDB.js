@@ -45,6 +45,7 @@ export async function upsertEmbedding({
   };
 }
 
+//if ids exists and has values, fetch those, otherwise fetch most recent based on limit
 export async function getEmbeddings({ ids, limit = 10 } = {}) {
   const collection = await getCollection();
 
